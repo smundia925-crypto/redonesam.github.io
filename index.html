@@ -5,7 +5,6 @@
 <title>Redone Sam | Portfolio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
@@ -25,14 +24,12 @@ nav {
   padding: 12px;
   text-align: center;
 }
-
 nav a {
   color: white;
   margin: 0 14px;
   text-decoration: none;
   font-weight: 600;
 }
-
 nav a:hover {
   color: #00e5ff;
 }
@@ -48,18 +45,14 @@ header {
   text-align: center;
   overflow: hidden;
 }
-
 header::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("abstract-tech.jpg");
-  background-size: cover;
-  background-position: center;
+  background: url("abstract-tech.jpg") center/cover no-repeat;
   animation: slowZoom 20s ease-in-out infinite;
   z-index: 1;
 }
-
 header::after {
   content: "";
   position: absolute;
@@ -67,7 +60,6 @@ header::after {
   background: rgba(0,0,0,0.55);
   z-index: 2;
 }
-
 header h1,
 header p {
   position: relative;
@@ -95,7 +87,6 @@ section {
   padding: 40px 20px;
   text-align: center;
 }
-
 .skill {
   background: #f5f5f5;
   padding: 20px;
@@ -104,33 +95,23 @@ section {
   animation: floatUp 0.9s ease forwards;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
-
 .skill i {
   font-size: 42px;
-  color: #222;
   margin-bottom: 12px;
   transition: transform 0.35s ease, color 0.35s ease;
 }
-
 .skill:hover {
   transform: translateY(-12px);
   box-shadow: 0 14px 30px rgba(0,0,0,0.15);
 }
-
 .skill:hover i {
   transform: scale(1.25);
   color: #4b0082;
 }
 
 @keyframes floatUp {
-  from {
-    opacity: 0;
-    transform: translateY(25px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(25px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* CONTACT */
@@ -144,6 +125,7 @@ input, textarea, button {
   width: 100%;
   padding: 14px;
   margin-bottom: 15px;
+  font-size: 16px;
 }
 
 button {
@@ -153,11 +135,23 @@ button {
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(106, 0, 255, 0.3);
+/* SUCCESS MESSAGE */
+#form-status {
+  display: none;
+  background: #e8f8ee;
+  border: 1px solid #2ecc71;
+  color: #2c7a4b;
+  padding: 18px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
 }
 
 /* WhatsApp */
@@ -174,7 +168,6 @@ button:hover {
   font-weight: 600;
 }
 
-/* Floating WhatsApp */
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
@@ -237,12 +230,18 @@ button:hover {
 
 <section id="contact">
   <h2>Contact Me</h2>
-  <form action="https://formspree.io/f/xpqrelwn" method="POST">
+
+  <form id="contact-form" action="https://formspree.io/f/xpqrelwn" method="POST">
     <input type="text" name="name" placeholder="Your Name" required>
     <input type="email" name="email" placeholder="Your Email" required>
     <textarea name="message" placeholder="Your Message" required></textarea>
-    <button type="submit">Send Message</button>
+    <button type="submit" id="sendBtn">Send Message</button>
   </form>
+
+  <div id="form-status">
+    ✅ Thank you! Your message has been sent successfully.  
+    I’ll get back to you shortly.
+  </div>
 </section>
 
 <a class="whatsapp-cta" href="https://wa.me/254783718479" target="_blank">
@@ -260,7 +259,34 @@ button:hover {
 
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
+
+const form = document.getElementById("contact-form");
+const status = document.getElementById("form-status");
+const btn = document.getElementById("sendBtn");
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
+  const data = new FormData(form);
+
+  const response = await fetch(form.action, {
+    method: form.method,
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  });
+
+  if (response.ok) {
+    form.style.display = "none";
+    status.style.display = "block";
+  } else {
+    btn.textContent = "Send Message";
+    btn.disabled = false;
+    alert("Something went wrong. Please try again.");
+  }
+});
 </script>
 
 </body>
-  </html>
+</html>
